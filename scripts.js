@@ -29,25 +29,18 @@ var whoseTurn = false;
 var counter = 9;
 var blackPieceCounter = 0;
 var whitePieceCounter = 0;
+var self = this;
 /* setPiece function initiates player 1 move as well as checks if position is already taken and inputs value into gameBoard array*/
 function setPiece(){
     if($(this).attr('class') === 'blankSpot'){
     if(!whoseTurn) {
         var testX = $(this).attr('row');
         var testY = $(this).attr('col');
-        checkLegalMove(testX, testY);
-        gameBoard[testX][testY] = "B";
-        $(this).addClass('blackPlayer').removeClass('blankSpot');
-        counter--;
-        whoseTurn = true;
+        checkBlackPlayerMove(testX, testY);
     } else {
-        $(this).addClass('whitePlayer').removeClass('blankSpot');
-        whoseTurn = false;
-        counter--;
         var testX = $(this).attr('row');
         var testY = $(this).attr('col');
-        gameBoard[testX][testY] = "W";
-        checkLegalMove(testX, testY);
+        checkWhitePlayerMove(testX,testY)
     }
         console.log(counter);
         if (counter === 0){
@@ -56,10 +49,16 @@ function setPiece(){
         }
     }
 }
-/* Check legal move */
-function checkLegalMove(x, y) {
-    var x = parseInt(x);
-    var y = parseInt(y);
+function blackLegalMoveIsTrue(x,y){
+    gameBoard[x][y] = "B";
+    $("[row='" + x + "'][col='" + y + "']").addClass('blackPlayer').removeClass('blankSpot');
+    counter--;
+    whoseTurn = true;
+}
+/* Check blackPlayerMove */
+function checkBlackPlayerMove(a, b) {
+    var x = parseInt(a);
+    var y = parseInt(b);
     //check right direction from the click point
     if (gameBoard[x][y + 1] === "W" && gameBoard[x].includes("B", [y + 2])) {
         for (var i = 1; i < gameBoard[x].length; i++) {
@@ -68,10 +67,11 @@ function checkLegalMove(x, y) {
                 $("[row='" + x + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
             }
         }
+        blackLegalMoveIsTrue(x,y);
         //Checking diagonally right down direction;
-    } else if (gameBoard[x + 1][y + 1] === "W") {
+    } if (gameBoard[x + 1][y + 1] === "W") {
         var diagArray = [];
-        for (var i = 1; i < gameBoard.length - x; i++) {
+        for (var i = 1; i <= gameBoard.length-y; i++) {
             diagArray.push(gameBoard[x + i][y + i]);
             console.log(diagArray);
             if (diagArray.includes("B")) {
@@ -80,28 +80,31 @@ function checkLegalMove(x, y) {
                         gameBoard[x + i][y + i] = "B";
                         $("[row='" + (x + i) + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                }blackLegalMoveIsTrue(x,y);
             }
         }
         //Checking vertically down direction;
-    } else if (gameBoard[x + 1][y] === "W") {
+    } if (gameBoard[x + 1][y] === "W") {
         var vertArray = [];
-        for (var i = 1; i < gameBoard.length - x; i++) {
-            vertArray.push(gameBoard[x + i][y]);
-            console.log(vertArray);
-            if (vertArray.includes("B")) {
-                for (var i = 1; i < vertArray.length; i++) {
-                    if (gameBoard[x + i][y] === "W") {
-                        gameBoard[x + i][y] = "B";
-                        $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
-                    }
+        for (var i = 1; i <= gameBoard.length - x; i++) {
+            if (vertArray.hasOwnProperty(x + i)) {
+                vertArray.push(gameBoard[x + i][y]);
+                console.log(vertArray);
+                if (vertArray.includes("B")) {
+                    for (var i = 1; i < vertArray.length; i++) {
+                        if (gameBoard[x + i][y] === "W") {
+                            gameBoard[x + i][y] = "B";
+                            $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                        }
+                    }blackLegalMoveIsTrue(x, y);
                 }
             }
         }
+    }
         //Check direction diagonally down left
-    } else if (gameBoard[x + 1][y - 1] === "W") {
+    } if (gameBoard[x + 1][y - 1] === "W") {
         var diagArray = [];
-        for (var i = 1; i < gameBoard.length - x; i++) {
+        for (var i = 1; i <= gameBoard.length - y; i++) {
             diagArray.push(gameBoard[x + i][y - i]);
             console.log(diagArray);
             if (diagArray.includes("B")) {
@@ -110,13 +113,13 @@ function checkLegalMove(x, y) {
                         gameBoard[x + i][y - i] = "B";
                         $("[row='" + (x + i) + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                }blackLegalMoveIsTrue(x,y);
             }
         }
         //Check direction left of click
-    } else if (gameBoard[x][y - 1] === "W") {
+    } if (gameBoard[x][y - 1] === "W") {
         var leftArray = [];
-        for (var i = 1; i < gameBoard.length - x; i++) {
+        for (var i = 1; i <= gameBoard.length - y; i++) {
             leftArray.push(gameBoard[x][y - i]);
             console.log(leftArray);
             if (leftArray.includes("B")) {
@@ -125,13 +128,13 @@ function checkLegalMove(x, y) {
                         gameBoard[x][y - i] = "B";
                         $("[row='" + x + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                } blackLegalMoveIsTrue(x,y);
             }
         }
         //Check direction diagonally up left
-    } else if (gameBoard[x - 1][y - 1] === "W") {
+    } if (gameBoard[x - 1][y - 1] === "W") {
         var diagArray = [];
-        for (var i = 1; i < x; i++) {
+        for (var i = 1; i <= gameBoard.length - x; i++) {
             diagArray.push(gameBoard[x - i][y - i]);
             console.log(diagArray);
             if (diagArray.includes("B")) {
@@ -140,13 +143,13 @@ function checkLegalMove(x, y) {
                         gameBoard[x - i][y - i] = "B";
                         $("[row='" + (x - i) + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                }blackLegalMoveIsTrue(x,y);
             }
         }
-        //Checking vertical direction;
-    } else if (gameBoard[x - 1][y] === "W") {
+        //Checking vertical up direction;
+    } if (gameBoard[x - 1][y] === "W") {
         var vertArray = [];
-        for (var i = 1; i < y; i++) {
+        for (var i = 1; i <= gameBoard.length - x; i++) {
             vertArray.push(gameBoard[x - i][y]);
             console.log(vertArray);
             if (vertArray.includes("B")) {
@@ -155,13 +158,13 @@ function checkLegalMove(x, y) {
                         gameBoard[x - i][y] = "B";
                         $("[row='" + (x - i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                } blackLegalMoveIsTrue(x,y);
             }
         }
         //Check direction diagonally up right
-    } else if (gameBoard[x - 1][y + 1] === "W") {
+    } if (gameBoard[x - 1][y + 1] === "W") {
         var vertArray = [];
-        for (var i = 1; i < x; i++) {
+        for (var i = 1; i < gameBoard.length - x; i++) {
             vertArray.push(gameBoard[x - i][y + i]);
             console.log(vertArray);
             if (vertArray.includes("B")) {
@@ -170,7 +173,7 @@ function checkLegalMove(x, y) {
                         gameBoard[x - i][y + i] = "B";
                         $("[row='" + (x - i) + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                     }
-                }
+                }blackLegalMoveIsTrue(x,y);
             }
         }
     }
