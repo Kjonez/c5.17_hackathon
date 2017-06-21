@@ -87,14 +87,17 @@ function checkBlackPlayerMove(a, b) {
     } if (gameBoard[x + 1][y] === "W") {
         var vertArray = [];
         for (var i = 1; i <= gameBoard.length - x; i++) {
-            if (vertArray.includes("B")) {
-                for (var i = 1; i < vertArray.length; i++) {
-                    if (gameBoard[x + i][y] === "W") {
-                        gameBoard[x + i][y] = "B";
-                        $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
-                    }
+            if (gameBoard.hasOwnProperty(x+i)) {
+                vertArray.push(gameBoard[x + i][y]);
+                console.log(vertArray);
+                if (vertArray.includes("B")) {
+                    for (var i = 1; i < vertArray.length; i++) {
+                        if (gameBoard[x + i][y] === "W") {
+                            gameBoard[x + i][y] = "B";
+                            $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                        }
+                    }blackLegalMoveIsTrue(x, y);
                 }
-                blackLegalMoveIsTrue(x, y);
             }
         }
         //Check direction diagonally down left
