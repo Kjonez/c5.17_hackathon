@@ -54,84 +54,116 @@ function blackLegalMoveIsTrue(x,y){
     $("[row='" + x + "'][col='" + y + "']").addClass('blackPlayer').removeClass('blankSpot');
     counter--;
     whoseTurn = true;
+    return;
 }
 /* Check blackPlayerMove */
 function checkBlackPlayerMove(a, b) {
     var x = parseInt(a);
     var y = parseInt(b);
     //check right direction from the click point
-    if (gameBoard[x][y + 1] === "W" && gameBoard[x].includes("B", [y + 2])) {
-        for (var i = 1; i < gameBoard[x].length; i++) {
-            if (gameBoard[x][y + i] === "W") {
-                gameBoard[x][y + i] = "B";
-                $("[row='" + x + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+    console.log("x", x, "y", y);
+
+    if (gameBoard[x][y + 1] === "W") {
+        var rightArray = [];
+        for (var i = 1; i <= gameBoard.length-1; i++) {
+            if(gameBoard.hasOwnProperty(x) && gameBoard[x].hasOwnProperty(y+i)&& gameBoard[x][y+i]!=="") {
+                rightArray.push(gameBoard[x][y + i]);
+                console.log(rightArray);
+                if (rightArray.includes("B")) {
+                    for (var i = 1; i < rightArray.length; i++) {
+                        if (gameBoard[x][y + i] === "W" && gameBoard[x][y+i] !== "") {
+                            gameBoard[x][y + i] = "B";
+                            $("[row='" + x + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                        }
+                    }
+                    blackLegalMoveIsTrue(x, y);
+                }
             }
         }
-        blackLegalMoveIsTrue(x,y);
-        //Checking diagonally right down direction;
-    } if (gameBoard[x + 1][y + 1] === "W") {
+        //Check direction diagonally up left
+    }
+    // if (gameBoard[x][y + 1] === "W" && gameBoard[x].includes("B", [y + 2])) {
+    //     for (var i = 1; i < gameBoard.length-1; i++) {
+    //         if (gameBoard[x][y + i] === "W" && gameBoard[x][y+i] !== "") {
+    //             gameBoard[x][y + i] = "B";
+    //             $("[row='" + x + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+    //         }
+    //     }
+    //     blackLegalMoveIsTrue(x, y);
+    //     //Checking diagonally right down direction;
+    // }
+    if (x<7){
+    if (gameBoard[x + 1][y + 1] === "W") {
         var diagArray = [];
-        for (var i = 1; i <= gameBoard.length-y; i++) {
-            if(gameBoard.hasOwnProperty(x+i) && gameBoard[x+i].hasOwnProperty(y+i)){
-            diagArray.push(gameBoard[x + i][y + i]);
-            console.log(diagArray);
-            if (diagArray.includes("B")) {
-                for (var i = 1; i < diagArray.length; i++) {
-                    if (gameBoard[x + i][y + i] === "W") {
-                        gameBoard[x + i][y + i] = "B";
-                        $("[row='" + (x + i) + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+        for (var i = 1; i <= gameBoard.length - 1; i++) {
+            if (gameBoard.hasOwnProperty(x + i) && gameBoard[x + i].hasOwnProperty(y + i) && gameBoard[x + i][y + i] !== "") {
+                diagArray.push(gameBoard[x + i][y + i]);
+                console.log(diagArray);
+                if (diagArray.includes("B")) {
+                    for (var i = 1; i < diagArray.length-1; i++) {
+                        if (gameBoard[x + i][y + i] === "W" && gameBoard[x + i][y+i] !== "") {
+                            gameBoard[x + i][y + i] = "B";
+                            $("[row='" + (x + i) + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                        }
                     }
+                    blackLegalMoveIsTrue(x, y);
                 }
-                blackLegalMoveIsTrue(x, y);
-            }
             }
         }
         //Checking vertically down direction;
-    } if (gameBoard[x + 1][y] === "W") {
-        var vertArray = [];
-        for (var i = 1; i <= gameBoard.length - x; i++) {
-            if(gameBoard.hasOwnProperty(x+i) && gameBoard[x+i].hasOwnProperty(y)) {
-                vertArray.push(gameBoard[x + i][y]);
-                console.log(vertArray);
-                if (vertArray.includes("B")) {
-                    for (var i = 1; i < vertArray.length; i++) {
-                        if (gameBoard[x + i][y] === "W") {
-                            gameBoard[x + i][y] = "B";
-                            $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
+    }
+}
+    if (x<7) {
+        if (gameBoard[x + 1][y] === "W") {
+            var vertArray = [];
+            for (var i = 1; i <= gameBoard.length - 1; i++) {
+                if (gameBoard.hasOwnProperty(x + i) && gameBoard[x + i].hasOwnProperty(y) && gameBoard[x + i][y] !== "") {
+                    vertArray.push(gameBoard[x + i][y]);
+                    console.log(vertArray);
+                    if (vertArray.includes("B")) {
+                        for (var i = 1; i < vertArray.length-1; i++) {
+                            if (gameBoard[x + i][y] === "W" && gameBoard[x + i][y] !== "") {
+                                gameBoard[x + i][y] = "B";
+                                $("[row='" + (x + i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                            }
                         }
+                        blackLegalMoveIsTrue(x, y);
                     }
-                    blackLegalMoveIsTrue(x, y);
                 }
             }
+            //Check direction diagonally down left
         }
-        //Check direction diagonally down left
-    } if (gameBoard[x + 1][y - 1] === "W") {
-        var diagArray = [];
-        for (var i = 1; i <= gameBoard.length - y; i++) {
-            if(gameBoard.hasOwnProperty(x+i) && gameBoard[x+i].hasOwnProperty(y-i)) {
-                diagArray.push(gameBoard[x + i][y - i]);
-                console.log(diagArray);
-                if (diagArray.includes("B")) {
-                    for (var i = 1; i < diagArray.length; i++) {
-                        if (gameBoard[x + i][y - i] === "W") {
-                            gameBoard[x + i][y - i] = "B";
-                            $("[row='" + (x + i) + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+    }
+    if (x<7) {
+        if (gameBoard[x + 1][y - 1] === "W") {
+            var diagArray = [];
+            for (var i = 1; i <= gameBoard.length - 1; i++) {
+                if (gameBoard.hasOwnProperty(x + i) && gameBoard[x + i].hasOwnProperty(y - i) && gameBoard[x + i][y - i] !== "") {
+                    diagArray.push(gameBoard[x + i][y - i]);
+                    console.log(diagArray);
+                    if (diagArray.includes("B")) {
+                        for (var i = 1; i < diagArray.length-1; i++) {
+                            if (gameBoard[x + i][y - i] === "W" && gameBoard[x + i][y-i] !== "") {
+                                gameBoard[x + i][y - i] = "B";
+                                $("[row='" + (x + i) + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
+                            }
                         }
+                        blackLegalMoveIsTrue(x, y);
                     }
-                    blackLegalMoveIsTrue(x, y);
                 }
             }
+            //Check direction left of click
         }
-        //Check direction left of click
-    } if (gameBoard[x][y - 1] === "W") {
+    }
+    if (gameBoard[x][y - 1] === "W") {
         var leftArray = [];
-        for (var i = 1; i <= gameBoard.length - y; i++) {
-            if(gameBoard.hasOwnProperty(x) && gameBoard[x].hasOwnProperty(y-i)) {
+        for (var i = 1; i <= gameBoard.length-1; i++) {
+            if(gameBoard.hasOwnProperty(x) && gameBoard[x].hasOwnProperty(y-i)&& gameBoard[x][y-i]!=="") {
                 leftArray.push(gameBoard[x][y - i]);
                 console.log(leftArray);
                 if (leftArray.includes("B")) {
-                    for (var i = 1; i < leftArray.length; i++) {
-                        if (gameBoard[x][y - i] === "W") {
+                    for (var i = 1; i < leftArray.length-1; i++) {
+                        if (gameBoard[x][y - i] === "W" && gameBoard[x][y-i] !== "") {
                             gameBoard[x][y - i] = "B";
                             $("[row='" + x + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                         }
@@ -141,15 +173,16 @@ function checkBlackPlayerMove(a, b) {
             }
         }
         //Check direction diagonally up left
-    } if (gameBoard[x - 1][y - 1] === "W") {
+    }
+    if (gameBoard[x - 1][y - 1] === "W") {
         var diagArray = [];
-        for (var i = 1; i <= gameBoard.length - x; i++) {
-            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y-i)) {
+        for (var i = 1; i <= gameBoard.length-1; i++) {
+            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y-i)&& gameBoard[x-i][y-i]!=="") {
                 diagArray.push(gameBoard[x - i][y - i]);
                 console.log(diagArray);
                 if (diagArray.includes("B")) {
-                    for (var i = 1; i < diagArray.length; i++) {
-                        if (gameBoard[x - i][y - i] === "W") {
+                    for (var i = 1; i < diagArray.length-1; i++) {
+                        if (gameBoard[x - i][y - i] === "W" && gameBoard[x - i][y-i] !== "") {
                             gameBoard[x - i][y - i] = "B";
                             $("[row='" + (x - i) + "'][col='" + (y - i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                         }
@@ -159,15 +192,16 @@ function checkBlackPlayerMove(a, b) {
             }
         }
         //Checking vertical up direction;
-    } if (gameBoard[x - 1][y] === "W") {
+    }
+    if (gameBoard[x - 1][y] === "W") {
         var vertArray = [];
-        for (var i = 1; i <= gameBoard.length - x; i++) {
-            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y)) {
+        for (var i = 1; i <= gameBoard.length-1; i++) {
+            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y)&& gameBoard[x-i][y]!=="") {
                 vertArray.push(gameBoard[x - i][y]);
                 console.log(vertArray);
                 if (vertArray.includes("B")) {
-                    for (var i = 1; i < vertArray.length; i++) {
-                        if (gameBoard[x - i][y] === "W") {
+                    for (var i = 1; i < vertArray.length-1; i++) {
+                        if (gameBoard[x - i][y] === "W" && gameBoard[x - i][y] !== "") {
                             gameBoard[x - i][y] = "B";
                             $("[row='" + (x - i) + "'][col='" + y + "']").removeClass('whitePlayer').addClass("blackPlayer");
                         }
@@ -177,15 +211,16 @@ function checkBlackPlayerMove(a, b) {
             }
         }
         //Check direction diagonally up right
-    } if (gameBoard[x - 1][y + 1] === "W") {
+    }
+    if (gameBoard[x - 1][y + 1] === "W") {
         var vertArray = [];
-        for (var i = 1; i < gameBoard.length - x; i++) {
-            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y+i)) {
+        for (var i = 1; i < gameBoard.length-1; i++) {
+            if(gameBoard.hasOwnProperty(x-i) && gameBoard[x-i].hasOwnProperty(y+i)&& gameBoard[x-i][y+i]!=="") {
                 vertArray.push(gameBoard[x - i][y + i]);
                 console.log(vertArray);
                 if (vertArray.includes("B")) {
-                    for (var i = 1; i < vertArray.length; i++) {
-                        if (gameBoard[x - i][y + i] === "W") {
+                    for (var i = 1; i < vertArray.length-1; i++) {
+                        if (gameBoard[x - i][y + i] === "W" && gameBoard[x - i][y + i] !== "") {
                             gameBoard[x - i][y + i] = "B";
                             $("[row='" + (x - i) + "'][col='" + (y + i) + "']").removeClass('whitePlayer').addClass("blackPlayer");
                         }
